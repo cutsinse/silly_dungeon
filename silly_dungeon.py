@@ -6,7 +6,7 @@
 from sys import exit
 #need this for the exit(0) command, which allows me to end the program at any point, within any function or loop
 
-inventory = ["test item 1"] #global variable
+inventory = ["bag of holding"] #global variable
 #use the command "global" to access this list within a function
 
 def taken():
@@ -19,8 +19,13 @@ def troll():
     """Used when the user types something in the program can't do anything with"""
     print("I don't understand")
 
-def alchemy_room():
-    print("You are in the alchemy room.")
+def poof():
+    """used when the user drinks a potion that takes them to another room."""
+    print("""\n***As the potion is consumed, you are engulfed in a swirling vortex of color and sensation!***\n""")
+
+def read():
+    """Used to read the note you find"""
+    print("red = poison \nblue = enchanting room \ngreen = entrance \npurple = basement \nyellow = chest")
 
 def enchanting_room():
     enchanting_description = """You are in the enchanting room!
@@ -36,7 +41,7 @@ def enchanting_room():
         #until another "action" is taken (such as take, look, or leave)
         global inventory
         choice = input(">").split(" ")
-        #the "choice" variable is consistently used in this program to refer to whatever the user types if __name__ == '__main__':
+        #the "choice" variable is consistently used in this program to refer to whatever the user types in
         #Typically commands like take or look or leave
         if "take" in choice:
             #nested additional if staments so the program can skip checking for the rest of the items
@@ -72,7 +77,7 @@ def enchanting_room():
                     taken()
                 else:
                     inventory.append("sword")
-                    print("Adding a knife to your inventory")
+                    print("Adding a sword to your inventory")
                     print(inventory)
             else:
                 blank()
@@ -84,6 +89,11 @@ def enchanting_room():
             break
             #the break command breaks the while True loop, and goes to the next line in the function
             #or, to the next line after the function is finished running
+        elif "read" in choice:
+            if "note" in inventory:
+                read()
+            else:
+                print("You have nothing to read.")
         elif "quit" in choice:
             exit(0)
             #more for the developer, a way to quit from this room instead of leaving twice
@@ -99,6 +109,7 @@ def basement():
     print("You are in the basement.")
     base_desc = """The basement is very steriotypical. It's damp, with dripping pipes in the ceiling,
     and you see a peice of paper on top of a few barrels of god knows what."""
+    print(base_desc)
     print("What do you do?")
 
     while True:
@@ -108,16 +119,24 @@ def basement():
             if "paper" in choice or "note" in choice:
                 if "note" in inventory:
                     taken()
-                    #still to be implimented, a way to read this # NOTE:
-                    #This note will eventually contain the key to what each potion does in the alchemy room
+                    #This note is the one that can be read and contains the key to what each potion does in the alchemy room
                 else:
                     inventory.append("note")
                     print("Adding the note to your inventory")
                     print(inventory)
-            if "barrel" in choice:
+            elif "barrel" in choice:
                 print("You can't take that.")
             else:
                 blank()
+        elif "inventory" in choice:
+            print(inventory)
+        elif "look" in choice:
+            print(base_desc)
+        elif "read" in choice:
+            if "note" in inventory:
+                read()
+            else:
+                print("You have nothing to read.")
         elif "leave" in choice or "exit" in choice or "back" in choice:
             break
         elif "quit" in choice:
@@ -127,15 +146,75 @@ def basement():
     enter()
     #There is no where else to go from the basement.
 
+def alchemy_room():
+    alchemy_decription = """The fantasy alchemy room is dimly lit and filled with the heady aroma of various ingredients.
+    On a cluttered table, four small vials stand out, each containing a shimmering potion in the following colors
+    red, purple, green, blue, and yellow, promising their own unique magical effects."""
+    print(alchemy_decription)
+
+    while True:
+        global inventory
+        choice = input(">").split(" ")
+        if "take" in choice or "drink" in choice:
+            if "red" in choice:
+                print("Oh no, that was poison!")
+                print("Aaaaaaaand, you're dead.")
+                exit(0)
+            elif "purple" in choice:
+                poof()
+                basement()
+            elif "green" in choice:
+                poof()
+                enter()
+            elif "blue" in choice:
+                poof()
+                enchanting_room()
+            elif "yellow" in choice:
+                print("Poof!  A magical treasure chest has appeared!\n What do you do?")
+                chest_choice = input(">")
+                while True:
+                    global inventory
+                    if "open" in chest_choice:
+                        if "key" in inventory:
+                            print("You use your key and the chest opens!")
+                            print("Congratulations, you win!!!!!!")
+                            exit(0)
+                        else:
+                            print("The chest is locked!")
+                            print("There is an explosion of smoke!")
+                            print("Once the smoke is cleared, the chest is gone \nand there is a new yellow potion on the table.")
+                            print("What do you do now?")
+                            break
+
+            else:
+                blank()
+        elif "inventory" in choice:
+            print(inventory)
+        elif "leave" in choice or "exit" in choice or "back" in choice:
+            break
+        elif "read" in choice:
+            if "note" in inventory:
+                read()
+            else:
+                print("You have nothing to read.")
+        elif "quit" in choice:
+            exit(0)
+        else:
+            troll()
+    enter() #here for when the "leave" option is used and breaks the while loop
+
+
 def enter():
-    print("You see before you 3 options.")
-    print("1: A wooden door straight ahead")
-    print("2: A staircse going up")
-    print("3: A staircase going down")
-    print("4: Check inventory")
+    enter_descrip = """You are at the entrance to the dungeon!
+    In front of you, you see:
+    1: A wooden door straight ahead
+    2: A staircse going up
+    3: A staircase going down """
+    print(enter_descrip)
+    print("What do you do?")
     while True:
         choice = input(">").split(" ")
-        if "1" in choice or "door" in choice:
+        if "1" in choice or "door" in choice or "straight" in choice:
                 alchemy_room()
         elif "2" in choice or "up" in choice:
             enchanting_room()
@@ -144,7 +223,14 @@ def enter():
         elif "4" in choice or "check" in choice or "inventory" in choice:
             global inventory
             print(inventory)
-        elif "leave" in choice or "exit" in choice:
+        elif "look" in choice:
+            print(enter_descrip)
+        elif "read" in choice:
+            if "note" in inventory:
+                read()
+            else:
+                print("You have nothing to read.")
+        elif "leave" in choice or "exit" in choice or "quit" in choice:
             print("Ok, bye!")
             exit(0)
         else:
