@@ -43,6 +43,10 @@ def enchanting_room():
         choice = input(">").split(" ")
         #the "choice" variable is consistently used in this program to refer to whatever the user types in
         #Typically commands like take or look or leave
+        leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
+        #Boolean values in loops or if statements should be simple.  If not, put the calculation
+        # in a variable and call the variable. leave_cmd is one such variable.
+
         if "take" in choice:
             #nested additional if staments so the program can skip checking for the rest of the items
             #this is also easier to type up the code and easier to read.
@@ -85,7 +89,9 @@ def enchanting_room():
             print(enchanting_description)
         elif "inventory" in choice:
             print(inventory)
-        elif "leave" in choice or "exit" in choice or "back" in choice:
+        elif leave_cmd == True:
+            #much simpler to read using the variable!
+            
             break
             #the break command breaks the while True loop, and goes to the next line in the function
             #or, to the next line after the function is finished running
@@ -115,6 +121,8 @@ def basement():
     while True:
         global inventory
         choice = input(">").split(" ")
+        leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
+
         if "take" in choice:
             if "paper" in choice or "note" in choice:
                 if "note" in inventory:
@@ -137,7 +145,7 @@ def basement():
                 read()
             else:
                 print("You have nothing to read.")
-        elif "leave" in choice or "exit" in choice or "back" in choice:
+        elif leave_cmd == True:
             break
         elif "quit" in choice:
             exit(0)
@@ -155,6 +163,7 @@ def alchemy_room():
     while True:
         global inventory
         choice = input(">").split(" ")
+        leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
         if "take" in choice or "drink" in choice:
             if "red" in choice:
                 print("Oh no, that was poison!")
@@ -190,7 +199,7 @@ def alchemy_room():
                 blank()
         elif "inventory" in choice:
             print(inventory)
-        elif "leave" in choice or "exit" in choice or "back" in choice:
+        elif leave_cmd == True:
             break
         elif "read" in choice:
             if "note" in inventory:
@@ -214,6 +223,7 @@ def enter():
     print("What do you do?")
     while True:
         choice = input(">").split(" ")
+        leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
         if "1" in choice or "door" in choice or "straight" in choice:
                 alchemy_room()
         elif "2" in choice or "up" in choice:
@@ -230,7 +240,7 @@ def enter():
                 read()
             else:
                 print("You have nothing to read.")
-        elif "leave" in choice or "exit" in choice or "quit" in choice:
+        elif leave_cmd == True:
             print("Ok, bye!")
             exit(0)
         else:
