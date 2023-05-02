@@ -6,26 +6,34 @@
 from sys import exit
 #need this for the exit(0) command, which allows me to end the program at any point, within any function or loop
 
-inventory = ["bag of holding"] #global variable
-#use the command "global" to access this list within a function
-
-def taken():
-    """Used when the user had already taken an item """
-    print("You already took that.")
-def blank():
-    """Used when the user tries to take something not from the list or that they cannot take"""
-    print("That's not here")
-def troll():
-    """Used when the user types something in the program can't do anything with"""
-    print("I don't understand")
+class user():
+	#contains all the user specific functions and the inventory variable.
+	#There is only 1 instance, the variable of which is named "player"
+	def __init__(self, name):
+		self.inventory = ["bag of holding"]
+		self.name = name
+		
+	def taken(self):
+		"""Used when the user had already taken an item """
+		print("You already took that.")
+	def blank(self):
+		"""Used when the user tries to take something not from the list or that they cannot take"""
+		print("That's not here")
+	def troll(self):
+		"""Used when the user types something in the program can't do anything with"""
+		print("I don't understand")
+	
+	def read(self):
+		"""Used to read the note you find"""
+		print("red = poison \nblue = enchanting room \ngreen = entrance \npurple = basement \nyellow = chest")
 
 def poof():
     """used when the user drinks a potion that takes them to another room."""
     print("""\n***As the potion is consumed, you are engulfed in a swirling vortex of color and sensation!***\n""")
 
-def read():
-    """Used to read the note you find"""
-    print("red = poison \nblue = enchanting room \ngreen = entrance \npurple = basement \nyellow = chest")
+def blank():
+	print("That isn't here.")
+
 
 def enchanting_room():
     enchanting_description = """You are in the enchanting room!
@@ -39,7 +47,6 @@ def enchanting_room():
     while True:
         #a while loop is used so the user can do multiple inputs, as many as they like
         #until another "action" is taken (such as take, look, or leave)
-        global inventory
         choice = input(">").split(" ")
         #the "choice" variable is consistently used in this program to refer to whatever the user types in
         #Typically commands like take or look or leave
@@ -55,40 +62,40 @@ def enchanting_room():
                 #the computer gets confused and returns "true" if you do
                 #if "stone" or "stones" in choice
                 #I don't fully understand why just yet, but it basically is "truthy" because it returns a non-blank string
-                if "glowing stones" in inventory:
-                    taken()
+                if "glowing stones" in player.inventory:
+                    player.taken()
                     #This if statement is needed so the user can't take more than one of each item
                 else:
-                    inventory.append("glowing stones")
+                    player.inventory.append("glowing stones")
                     print("stones added to your inventory")
-                    print(inventory)
+                    print(player.inventory)
             elif "knife" in choice or "knives" in choice:
-                if "knife" in inventory:
-                    taken()
+                if "knife" in player.inventory:
+                    player.taken()
                 else:
-                    inventory.append("knife")
+                    player.inventory.append("knife")
                     print("Adding a knife to your inventory")
-                    print(inventory)
+                    print(player.inventory)
             elif "key" in choice:
-                if "key" in inventory:
-                    taken()
+                if "key" in player.inventory:
+                    player.taken()
                 else:
-                    inventory.append("key")
+                    player.inventory.append("key")
                     print("Adding the key to your inventory")
-                    print(inventory)
+                    print(player.inventory)
             elif "sword" in choice or "swords" in choice:
-                if "sword" in inventory:
-                    taken()
+                if "sword" in player.inventory:
+                    player.taken()
                 else:
-                    inventory.append("sword")
+                    player.inventory.append("sword")
                     print("Adding a sword to your inventory")
-                    print(inventory)
+                    print(player.inventory)
             else:
                 blank()
         elif "look" in choice:
             print(enchanting_description)
         elif "inventory" in choice:
-            print(inventory)
+            print(player.inventory)
         elif leave_cmd == True:
             #much simpler to read using the variable!
             
@@ -97,7 +104,7 @@ def enchanting_room():
             #or, to the next line after the function is finished running
         elif "read" in choice:
             if "note" in inventory:
-                read()
+                player.read()
             else:
                 print("You have nothing to read.")
         elif "quit" in choice:
@@ -107,7 +114,7 @@ def enchanting_room():
             #it didn't see a single list item called "force quit" and so returned False
             #I could use the the "and" operator to search for both, but this is just simpler
         else:
-            troll()
+            player.troll()
     enter()
     #Since there is no where else to go from the enchanting_room, the user can only return to the entrance.
 
@@ -119,30 +126,29 @@ def basement():
     print("What do you do?")
 
     while True:
-        global inventory
         choice = input(">").split(" ")
         leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
 
         if "take" in choice:
             if "paper" in choice or "note" in choice:
-                if "note" in inventory:
-                    taken()
+                if "note" in player.inventory:
+                    player.taken()
                     #This note is the one that can be read and contains the key to what each potion does in the alchemy room
                 else:
-                    inventory.append("note")
+                    player.inventory.append("note")
                     print("Adding the note to your inventory")
-                    print(inventory)
+                    print(player.inventory)
             elif "barrel" in choice:
                 print("You can't take that.")
             else:
                 blank()
         elif "inventory" in choice:
-            print(inventory)
+            print(player.inventory)
         elif "look" in choice:
             print(base_desc)
         elif "read" in choice:
-            if "note" in inventory:
-                read()
+            if "note" in player.inventory:
+                player.read()
             else:
                 print("You have nothing to read.")
         elif leave_cmd == True:
@@ -150,7 +156,7 @@ def basement():
         elif "quit" in choice:
             exit(0)
         else:
-            troll()
+            player.troll()
     enter()
     #There is no where else to go from the basement.
 
@@ -161,7 +167,6 @@ def alchemy_room():
     print(alchemy_decription)
 
     while True:
-        global inventory
         choice = input(">").split(" ")
         leave_cmd = "leave" in choice or "exit" in choice or "back" in choice
         if "take" in choice or "drink" in choice:
@@ -182,9 +187,8 @@ def alchemy_room():
                 print("Poof!  A magical treasure chest has appeared!\n What do you do?")
                 chest_choice = input(">")
                 while True:
-                    global inventory
                     if "open" in chest_choice:
-                        if "key" in inventory:
+                        if "key" in player.inventory:
                             print("You use your key and the chest opens!")
                             print("Congratulations, you win!!!!!!")
                             exit(0)
@@ -198,18 +202,18 @@ def alchemy_room():
             else:
                 blank()
         elif "inventory" in choice:
-            print(inventory)
+            print(player.inventory)
         elif leave_cmd == True:
             break
         elif "read" in choice:
-            if "note" in inventory:
-                read()
+            if "note" in player.inventory:
+                player.read()
             else:
                 print("You have nothing to read.")
         elif "quit" in choice:
             exit(0)
         else:
-            troll()
+            player.troll()
     enter() #here for when the "leave" option is used and breaks the while loop
 
 
@@ -231,21 +235,23 @@ def enter():
         elif "3" in choice or "down" in choice:
             basement()
         elif "4" in choice or "check" in choice or "inventory" in choice:
-            global inventory
-            print(inventory)
+         
+            print(player.inventory)
         elif "look" in choice:
             print(enter_descrip)
         elif "read" in choice:
-            if "note" in inventory:
-                read()
+            if "note" in player.inventory:
+                player.read()
             else:
                 print("You have nothing to read.")
         elif leave_cmd == True:
             print("Ok, bye!")
             exit(0)
         else:
-            print("\nI'm sorry, I don't understand.")
+            player.troll()
 
 #Program flow starts here.
-
+print("Welcome to the Silly Dungeon!")
+name = input("What is your name? ")
+player = user(name)
 enter()
