@@ -47,7 +47,8 @@ class Potion(Item):
 		self.teleport_target = target
 		
 	def drink(self):
-		return self.teleport_target
+		print("""\n***As the potion is consumed, you are engulfed in a swirling vortex of color and sensation!***\n""")
+		return self.teleport_target.enter()
 
 
 class Red(Potion):

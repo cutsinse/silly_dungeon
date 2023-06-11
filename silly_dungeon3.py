@@ -18,6 +18,7 @@ green = Green()
 purple = Purple()
 yellow = Yellow()
 chest = Chest()
+
 #it not added to an inventory yet, should be added to the alchemy inventory 
 #after drinking the yellow potion
 paper = Paper('paper', """
@@ -56,9 +57,7 @@ blue.set_teleport_target(enchanting)
 green.set_teleport_target(entryway)
 purple.set_teleport_target(basement)
 
-
-
-current_room = entryway
+	
 
 
 player_name = "Sally" #input("What is your name?\n")
@@ -66,96 +65,23 @@ player_name = "Sally" #input("What is your name?\n")
 
 player = User(player_name, [bag])
 
-play = True
-
 #test area, turn play to True to activate the game loop. 
 
 
 #gameplay loop. 
-current_room.enter()
-while play == True:
-
-	current_room_dict_list = items_dict(current_room)
-	choice = input("> ").lower()
-	if "straight" in choice or "door" in choice:
-		current_room = alchemy
-	elif "up" in choice:
-		current_room = enchanting
-	elif "down" in choice:
-		current_room = basement
-	elif "q" in choice:
+dev_input = entryway.enter(player)
+while True:
+	if dev_input == 'alchemy':
+		dev_input = alchemy.enter(player)
+	elif dev_input == 'enchanting':
+		dev_input = enchanting.enter(player)
+	elif dev_input == 'basement':
+		dev_input == basement.enter(player)
+	elif dev_input == 'entryway':
+		dev_input = entryway.enter(player)
+	elif "q" in dev_input:
+		print('bye!')
 		exit(0)
-	elif 'inventory' in choice:
-		player.check_inventory()
-		break
-	else:
-		player.troll()
-	current_room.enter()
-	current_room_dict_list = items_dict(current_room)
-	player_dict_list = items_dict(player)
-	while True:
-		
-		choice2 = input("What now? \n").lower()
-		choice2_split = choice2.lower().split()
-		#The user input is now a list of words, all lowercase 
-		
-		#creating 2 separate variables for the input allows for 2, separate
-		#processes, one to handle single word items, 
-		#but you can take more than one at a time
-		#and one to handle multiple word items, but you can only take 
-		#one at a time. (
-			#ex: you can't take the "yellow potion" and "blue potion" 
-			#with a single command "take the yellow and blue potions"
-			
-		if "take" in choice2:
-			for word in choice2_split:
-				#This loops through the choice2_split list to look for matching
-				#items in the current_room.inventory list and if they match
-				#goes to the player.take() function to take the item from
-				#the room inventory list and put it in the 
-				#player inventory list
-				if word in current_room_dict_list:
-					player.take(current_room_dict_list[word], current_room)
-				elif word in player_dict_list:
-					print('You already took that')
-					
-				else:
-					#By passing, this helps disregard any non-useful words
-					#like "the" or other grammer words
-					#Unfortunately, this loop is limited in that I can 
-					#only use single word items in the inventories 
-					#and I don't have a way to use synonyms or account for
-					#plural vs singular of the items
-					pass
-			#this section handles choice2 as a joined string, 
-			#allowing for multiple word items to be taken. 
-			#not the prettiest option		
-			if "blue potion" in choice2:
-				player.take('blue potion', current_room)
-			elif "red potion" in choice2:
-				player.take(red, current_room)
-			elif "purple potion" in choice2:
-				player.take('purple potion', current_room)
-			elif "green potion" in choice2:
-				player.take('green potion', current_room)
-			elif "yellow potion" in choice2:
-				player.take('yellow potion', current_room)
-			elif "stone" in choice2 or "glow" in choice2:
-				player.take('glowing stone', current_room)
-			else:
-				pass			
-			
-			player.check_inventory()
-			current_room.check_inventory()
-			
-		elif "drink" in choice2:
-			if "blue" in choice2:
-				current_room = blue.drink()
+	
 
-		elif "leave" in choice2:
-			current_room = entryway
-			break
-		elif "q" in choice2:
-			exit(0)
-		else:
-			print("I don't understand")
+

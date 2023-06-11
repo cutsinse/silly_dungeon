@@ -39,11 +39,6 @@ class User():
 	def troll(self):
 		"""Used when the user types something in the program can't do anything with"""
 		print(f"I'm sorry {self.name} I don't understand\n")
-	
-	#this function may change based on how the item classes go. 
-	def read(self):
-		"""Used to read the note you find"""
-		print("red = poison \nblue = enchanting room \ngreen = entrance \npurple = basement \nyellow = chest")
 
 	def poof(self):
 		"""used when the user drinks a potion that takes them to another room."""
