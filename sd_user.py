@@ -14,24 +14,22 @@ class User():
 		self.inventory = items
 
 	def check_inventory(self):
-		for item in self.inventory:
-			print(f"[{item.name},]")
+		print(self.inventory)
 	
-	def take(self, item, current_room):
+	def take(self, item, item_dict, current_room):
 		if item in current_room.inventory:
-			if not item.taken:
-				current_room.inventory.remove(item)
+			item_object = item_dict.get(item)
+			if item_object.taken == False:
 				self.inventory.append(item)
-				item.taken = True
+				current_room.inventory.remove(item)
+				item_object.taken = True
+			elif item_object.taken == True:
+				print("""item_object.taken == True, but it was found in
+				the current_room.inventory? """)
 		else:
-			print("You can't do that")
+			print("""Item not taken.  Did you already take it?.""")
 	
-	def drop(self, item, current_room):
-		if item in self.inventory:
-			self.inventory.remove(item)
-			current_room.inventory.append(item)
-		else:
-			print("You can't do that")
+
 
 	def blank(self):
 		"""Used when the user tries to take something not from the list or that they cannot take"""
