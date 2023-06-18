@@ -10,3 +10,6 @@ Creating instances:
   The main file, silly_dungeon3, creates instances of each of the rooms as well as the player and the item dictionary. 
   By using these instances and then passing those instances into each enter() function, this allows changes to be saved as 
   the user goes from room to room  and takes or doesn't take items. 
+
+
+Within the enter function, processing the user's input is the main way the game functions.  
