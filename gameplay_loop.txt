@@ -12,4 +12,6 @@ Creating instances:
   the user goes from room to room  and takes or doesn't take items. 
 
 
-Within the enter function, processing the user's input is the main way the game functions.  
+Within the enter function, processing the user's input through if statements is the primary way add new mechanics to the game, 
+or new ways for the user to access and use new items and rooms. Everything is set up as general as possible, and items are looked 
+up in the dictionary in order to get their function (ex: item_dict.get(item).read() to read a paper)
