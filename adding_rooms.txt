@@ -1,0 +1,10 @@
+How to add rooms:
+
+Go to sd_rooms. 
+  The enter() function is the main gameplay loop (see gameplay_loop.txt for more). 
+  Create a new Room() subclass, add starting inventories and descriptions for each room. 
+  Each room has attributes the coincide to ways to exit, and returns a string that eventually goes to the 
+  dev_input while loop to enter the next room.  The default Room() value is self.exit = 'entryway'.  
+  Others can be added, the Entryway() class has several examples.  
+  
+  
