@@ -22,15 +22,28 @@ entryway = Entryway()
 
 	
 
-
-player_name = "Sally" #input("What is your name?\n")
+print("*" * 5, "Welcome to the Silly Dungeon", "*" * 5)
+player_name = input("What is your name?\n").lower()
 #For testing I got tired of dealing with the input part
 
 player = User(player_name, ["bag"])
 
 #test area, turn play to True to activate the game loop. 
 
+print(dedent(f"""
+Welcome {player_name.capitalize()}!
+This is a simple typing game, type what you want to do and explore!
+To win, find and open the treasure chest!  Also, don't die....
 
+This game only has a fixed set of commands, to see the list, just type
+"help" or even just "h".
+
+Good luck!
+
+"""))
+
+input("Press enter to continue")
+print(" ")
 #gameplay loop. 
 dev_input = entryway.enter(player, item_dict)
 while True:
@@ -39,7 +52,7 @@ while True:
 	elif dev_input == 'enchanting':
 		dev_input = enchanting.enter(player, item_dict)
 	elif dev_input == 'basement':
-		dev_input == basement.enter(player, item_dict)
+		dev_input = basement.enter(player, item_dict)
 	elif dev_input == 'entryway':
 		dev_input = entryway.enter(player, item_dict)
 	elif "q" in dev_input:

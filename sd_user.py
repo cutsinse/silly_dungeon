@@ -10,7 +10,7 @@ class User():
 	#contains all the user specific functions and the inventory variable.
 	#There is only 1 instance, the variable of which is named "player"
 	def __init__(self, name, items):
-		self.name = name
+		self.name = name.capitalize()
 		self.inventory = items
 
 	def check_inventory(self):

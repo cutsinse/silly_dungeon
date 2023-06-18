@@ -9,6 +9,7 @@ class Room(object):
 	#this will hold the general room functions
 	def __init__(self, items):
 		self.inventory = items
+		self.exit = "entryway"
 		
 	def enter_callback(self):
 		print(f"You are in the {self.name.capitalize()} Room. \n", dedent(self.desc))
@@ -19,6 +20,132 @@ class Room(object):
 	
 	def check_inventory(self):
 		print(self.inventory)
+	
+	def help(self):
+		print(dedent("""
+		Command:  what it does. 
+		
+		look: see the room's current inventory
+		
+		look around: re-print the room's description
+		
+		look at: look at a specific item
+		
+		leave: leaves using the most obvious exit
+		
+		inventory: check the player's current inventory
+		
+		take: take an item from the room
+		
+		drink: drink a specific item (item must first be taken)
+		
+		read: read a specific item (item must first be taken)
+		
+		open: open a specific item (item must be in player's inventory)
+		
+		help: prints this list
+		
+		q:  quit the game
+		
+		
+		What will you do now?
+		"""))
+
+	
+	def enter(self, user, item_dict):
+		self.enter_callback()
+		while True:
+			choice = input(">").lower()
+			#i = 0
+			if 'q' in choice:
+				print(f'quiting from the {self.name.capitalize()} Room')
+				exit(0)
+			elif "help" in choice or "h" == choice:
+				self.help()	
+			elif "straight" in choice or "door" in choice:
+				return self.straight
+			elif "up" in choice:
+				return self.up
+			elif "down" in choice:
+				return self.down			
+			
+			elif 'take' in choice:
+				#print(self.inventory)	
+				for item in choice.split():
+					#print(i, item)
+					if item in self.inventory:
+						user.take(item, item_dict, self)
+						print("taken")
+						break
+					elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
+						user.take("glowing stone", item_dict, self)
+						print("taken")
+						break
+					elif f"{item} potion" in self.inventory:
+						user.take(f"{item} potion", item_dict, self)
+						print("taken")
+						break
+					
+				else:
+					print(f"item not found in in the {self.name.capitalize()} Room")
+					#i += 1
+				#APPARENTLY!!!!! If you want to run the for loop and then 
+				#have something happen if the loop is never broken, you
+				#add a 'break' command within the if statement within the 
+				#for loop, and then put an else statement ALIGNED WITH THE
+				#'for' instead instead of aligned with 'if' and 'elif' 
+				#which is nested under the for loop. 	
+
+			elif 'drink' in choice:							
+				for item in choice.split():	
+					#print(i, item)
+					if f"{item} potion" in user.inventory:
+						return item_dict.get(f"{item} potion").drink(user, self)
+					#i = i +1
+				else:
+					print("You can't do that yet.")
+					
+			elif 'open' in choice:				
+				if "chest" in user.inventory:
+					item_dict.get("chest").open(user)
+				else:
+					print("Open the what now?")
+			
+			elif "read" in choice: 
+				if "paper" in user.inventory:
+					item_dict.get("paper").read()
+				else:
+					print("Read what?")
+			elif 'inventory' in choice:
+				user.check_inventory()
+
+			elif "look" in choice:
+				if "around" in choice:
+					self.look_around()
+				elif "at" in choice:
+					for item in choice.split():
+						#print(i, item)
+						if item in self.inventory:
+							item_dict.get(item).look_at()
+							break
+						elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
+							item_dict.get("glowing stone").look_at()
+							break
+						elif f"{item} potion" in self.inventory:
+							item_dict.get(f'{item} potion').look_at()
+							break
+					else:
+						print("Look at what?")
+				else:
+					self.check_inventory()
+						
+					
+			
+			elif "leave" in choice or "back" in choice:
+				return self.exit			
+			else:
+				user.troll()
+
 		
 	
 	
@@ -35,67 +162,7 @@ class Alchemy(Room):
 			red, purple, green, blue, and yellow, each promising their own unique magical effects."""
 		self.name = 'alchemy'
 	
-	def enter(self, user, item_dict):
-		self.enter_callback()
-		while True:
-			choice = input(">").lower()
-			i = 0
-			if 'q' in choice:
-				print('quiting from alchemy room')
-				exit(0)
-			elif 'take' in choice:
-				print(self.inventory)	
-				for item in choice.split():
-					print(i, item)
-					if item in self.inventory:
-						user.take(item, item_dict, self)
-						break
-					elif f"{item} potion" in self.inventory:
-						user.take(f"{item} potion", item_dict, self)
-						break
-				else:
-					print("item not found in in the alchemy room")
-					i += 1
-				#APPARENTLY!!!!! If you want to run the for loop and then 
-				#have something happen if the loop is never broken, you
-				#add a 'break' command within the if statement within the 
-				#for loop, and then put an else statement ALIGNED WITH THE
-				#'for' instead instead of aligned with 'if' and 'elif' 
-				#which is nested under the for loop. 	
 					
-					
-						
-				
-				#if 'blue' in choice:
-				#	user.take("blue potion", item_dict, self)
-			elif 'drink' in choice:
-				#if 'blue' in choice:
-				#	if 'blue potion' in user.inventory:
-				#		return item_dict.get('blue potion').drink()
-				#	else:
-				#		print("You have to take the blue potion first")
-				
-				for item in choice.split():	
-					print(i, item)
-					if f"{item} potion" in user.inventory:
-						return item_dict.get(f"{item} potion").drink(user, self)
-					i = i +1
-				else:
-					print("You can't drink that.  Did you take it first?")
-					
-					
-			elif 'open' in choice:
-				if "chest" in user.inventory:
-					item_dict.get("chest").open(user)
-				else:
-					print("Open the what now?")
-			elif 'inventory' in choice:
-				user.check_inventory()
-			elif "leave" in choice or "back" in choice:
-				return 'entryway'
-			else:
-				user.troll()
-				
 				
 
 		
@@ -112,41 +179,10 @@ class Enchanting(Room):
 		a sword and a key.
 		"""
 		self.name = 'enchanting'
-	
-	def enter(self, user, item_dict):
-		self.enter_callback()
+		self.down = 'entryway'
+		
+		
 
-		while True:
-			choice = input(">").lower()
-			#stone_bool = "glowing" in choice or "stone" in choice and "glowing stone" in self.inventory
-			i = 0
-			if 'take' in choice:
-				print(self.inventory)	
-				if "stone" in choice:
-					user.take("glowing stone", item_dict, self)
-				else:
-					for item in choice.split():
-						print(i, item)
-						if item in self.inventory:
-							user.take(item, item_dict, self)
-							break
-						elif f"{item} potion" in self.inventory:
-							user.take(f"{item} potion", item_dict, self)
-							break
-					else:
-						print("Not found.  Did you take it already?")
-						i += 1		
-			elif "leave" in choice or "back" in choice:
-				return 'entryway'		
-			elif "inventory" in choice:
-				user.check_inventory()					
-			elif 'q' in choice:
-				print('quiting from enchanting room')
-				exit(0)
-			elif "look around" in choice:
-				self.look_around()				
-			else:
-				user.troll()
 
 
 class Entryway(Room):
@@ -160,42 +196,14 @@ class Entryway(Room):
 			A staircase going down
 			"""
 		self.name = 'entryway'
+		self.up = 'enchanting'
+		self.down = 'basement'
+		self.straight = 'alchemy'
+		self.exit = 'q'
 		
-	def enter(self, user, item_dict):
 
-		self.enter_callback()
-		while True:
-			choice = input("> ").lower()
-			if "straight" in choice or "door" in choice:
-				return "alchemy"
-			elif 'take' in choice:
-				print(self.inventory)	
-				if "stone" in choice:
-					user.take("glowing stone", item_dict, self)
-				else:
-					for item in choice.split():
-						print(i, item)
-						if item in self.inventory:
-							user.take(item, item_dict, self)
-							break
-						elif f"{item} potion" in self.inventory:
-							user.take(f"{item} potion", item_dict, self)
-							break
-					else:
-						print("Not found.")
-			elif "up" in choice:
-				return "enchanting"
-			elif "down" in choice:
-				return "basement"
-			elif "q" in choice or "leave" in choice:
-				print("quitting from the entryway")
-				exit(0)
-			elif 'inventory' in choice:
-				user.check_inventory()
-			else:
-				user.troll()
 
-class Basement(Room):
+class Basement(Room):	
 	def __init__(self):
 		super(Basement, self).__init__(["paper"])
 		self.desc = """
@@ -205,44 +213,15 @@ class Basement(Room):
 			"""
 
 		self.name = 'basement'
-		
-	def enter(self, user, item_dict):
-		self.enter_callback()
-		i = 0
-		while True:
-			choice = input(">").lower()
-			if "inventory" in choice:
-				user.check_inventory()		
-			elif 'take' in choice:
-				print(self.inventory)	
-				if "stone" in choice:
-					user.take("glowing stone", item_dict, self)
-				else:
-					for item in choice.split():
-						print(i, item)
-						if item in self.inventory:
-							user.take(item, item_dict, self)
-							break
-						elif f"{item} potion" in self.inventory:
-							user.take(f"{item} potion", item_dict, self)
-							break
-					else:
-						print("Not found.  Did you take that already?")	
-			elif "leave" in choice or "back" in choice:
-				return 'entryway'			
-			elif'q' in choice:
-				print('quiting from the basement')
-				exit(0)
-			elif 'name' in choice:
-				print(f"Your name is: {user.name}")
-			else:
-				user.troll()
+		self.up = 'entryway'
+
 
 
 	
 if __name__ == "__main__":
 
-	Alchemy().check_inventory()
-	Basement().check_inventory()
-	Entryway().check_inventory()
-	Enchanting().check_inventory()
+	basement = Basement()
+	print(basement.name)
+	print(basement.inventory)
+	print(basement.exit)
+	print(isinstance(basement, Room))
