@@ -1,0 +1,17 @@
+How to add items to the game. 
+
+Bottom Line up Front:  
+  -Go to sd_items
+  -Item classes:
+    -Parent Item Class
+      -simplest items
+      -Functions: look_at(), kill() (item must be subclassed to use the kill function)
+    -Paper
+      -adds a contents attribute and a read() function
+    -Chest
+      -static, this class can only create one kind of chest for now. 
+    -Potion
+      -adds a teleport target attribute, and a default drink() function that returns the teleport target. 
+      -also adds a set_teleport_target() (which I didn't end up using)
+      -To create your own potion with unique effects, create a new potion subclass and override the drink function
+      
