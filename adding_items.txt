@@ -1,4 +1,4 @@
-How to add items to the game. 
+How to add items to the game.  
  
   -Go to sd_items
   -Item classes:
@@ -26,3 +26,6 @@ Inventories:
   between inventories, you use the take() function in sd_user.  This will .append() and .remove() items from one list to another, 
   and also check and set the "taken" attribute from False to True (note: this ended up not being necessary for me, but others 
   may find it useful so I left it). 
+  
+  You can then add the key as a string to the list of items for the self.inventory attributes for the user and/or the rooms. 
+   
