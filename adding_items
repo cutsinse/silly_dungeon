@@ -1,6 +1,5 @@
 How to add items to the game. 
-
-Bottom Line up Front:  
+ 
   -Go to sd_items
   -Item classes:
     -Parent Item Class
@@ -14,4 +13,16 @@ Bottom Line up Front:
       -adds a teleport target attribute, and a default drink() function that returns the teleport target. 
       -also adds a set_teleport_target() (which I didn't end up using)
       -To create your own potion with unique effects, create a new potion subclass and override the drink function
-      
+     
+     -I_Engine:
+        -holds the dictionary.  When you create an instance of this class, you create a single instance of each item
+          in the dictionary.  This makes it so you can save changes to the item throughout the game. 
+        -In order to add an item to the game, you must add it to the dictionary. 
+          **note, the item key will be a lot easier to work with as a single word, but it will also be visible to the player. 
+
+Inventories:
+  Rather than tracking the objects themselves through a bunch of functions, each room and the user will have an attribute, 
+  "self.inventory", a simple list of strings.  This list of strings matches the keys in the item dictionary.  To move items
+  between inventories, you use the take() function in sd_user.  This will .append() and .remove() items from one list to another, 
+  and also check and set the "taken" attribute from False to True (note: this ended up not being necessary for me, but others 
+  may find it useful so I left it). 
