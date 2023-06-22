@@ -6,10 +6,35 @@ from textwrap import dedent
 from sd_items import *
 
 class Room(object):
-	#this will hold the general room functions
+
 	def __init__(self, items):
 		self.inventory = items
+		
+		#inventories are simple lists of strings, which match the 
+		#keys of the all_items dictionary in sd_items.py. Then you use the 
+		#.get() to get and use the item functions, such as:
+			#item_dict.get(f"{item} potion").drink(user, self)
+			
+		#I did it this way because moving strings around to different lists
+		#is a LOT simpler than moving the item objects themselves.
+		
 		self.exit = "entryway"
+		self.up = "entryway"
+		self.down = "entryway"
+		self.straight = "entryway"
+		
+		#sets the default exits to entryway, which is true for almost all
+		#rooms in the first dungeon layout. 
+			#not all rooms have more than one exit.  setting all the 
+			#possible exit defaults prevents the game crashing if the 
+			#user tries to leave a room incorrectly, such as typing 
+			#"up" in the enchanting room, which has no up exit. 
+			#not a perfect solution, it adds some logical errors to the game, 
+			#but it prevents it from crashing so I'm rolling with it for now. 
+		
+		#each room that is subclassed can override this, as well as add 
+		#other exits, like the north exit or the south exit. 
+
 		
 	def enter_callback(self):
 		print(f"You are in the {self.name.capitalize()} Room. \n", dedent(self.desc))
@@ -20,8 +45,13 @@ class Room(object):
 	
 	def check_inventory(self):
 		print(self.inventory)
+		#very similar to the user class version, but this prints the 
+		#rooms inventory
 	
 	def help(self):
+		#commands the user can use when playing, to be used if the 
+		#player gets stuck. 
+		
 		print(dedent("""
 		Command:  what it does. 
 		
@@ -52,7 +82,27 @@ class Room(object):
 		"""))
 
 	
+	
+#enter() is the primary game loop that the player will be interacting
+		#with.  If you want the user to type something and then have something 
+		#happen, this is the function to do make it happen.
+		
+		#Also note, there are several pieces of code that are commented out, 
+		#most of these I put in for testing purposes, and can be 
+		#uncommented for further testing. 
+		
+		#The main way the user input is processed is with simple 
+			#if "x" in choice:  statements. 
+			#with some f strings to help deal with 2 word item keys 
+				#such as "red potion" or "glowing stone"
+		#However, when working with both user and room inventories, a 
+		#for loop is used to compare the input to the lists.  
+			
+		
 	def enter(self, user, item_dict):
+		#passing in the user and item_dict instances each time 
+		#helps keep everything consistent.
+		
 		self.enter_callback()
 		while True:
 			choice = input(">").lower()
@@ -60,21 +110,19 @@ class Room(object):
 			if 'q' in choice:
 				print(f'quiting from the {self.name.capitalize()} Room')
 				exit(0)
-			elif "help" in choice or "h" == choice:
-				self.help()	
-			elif "straight" in choice or "door" in choice:
-				return self.straight
-			elif "up" in choice:
-				return self.up
-			elif "down" in choice:
-				return self.down			
 			
-			elif 'take' in choice:
+			elif 'take' in choice or "pick up" in choice:
 				#print(self.inventory)	
 				for item in choice.split():
 					#print(i, item)
 					if item in self.inventory:
 						user.take(item, item_dict, self)
+						
+						#self = current room in the take function.  passing
+						#the room instance allows changes to the room's 
+						#inventory to be saved and remain the same as the 
+						#user keeps playing. 
+						
 						print("taken")
 						break
 					elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
@@ -105,6 +153,16 @@ class Room(object):
 				else:
 					print("You can't do that yet.")
 					
+			
+			elif "help" in choice or "h" == choice:
+				self.help()	
+			elif "straight" in choice or "door" in choice:
+				return self.straight
+			elif "up" in choice:
+				return self.up
+			elif "down" in choice:
+				return self.down			
+			
 			elif 'open' in choice:				
 				if "chest" in user.inventory:
 					item_dict.get("chest").open(user)
@@ -123,10 +181,12 @@ class Room(object):
 				if "around" in choice:
 					self.look_around()
 				elif "at" in choice:
+					#i = 0
 					for item in choice.split():
 						#print(i, item)
 						if item in self.inventory:
 							item_dict.get(item).look_at()
+							#i =+ 1
 							break
 						elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
 							item_dict.get("glowing stone").look_at()

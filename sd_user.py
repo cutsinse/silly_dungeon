@@ -12,6 +12,8 @@ class User():
 	def __init__(self, name, items):
 		self.name = name.capitalize()
 		self.inventory = items
+		#inventories are lists of strings, exactly like the room 
+		#inventories.  For more details, see sd_rooms.py comments
 
 	def check_inventory(self):
 		print(self.inventory)
@@ -19,6 +21,10 @@ class User():
 	def take(self, item, item_dict, current_room):
 		if item in current_room.inventory:
 			item_object = item_dict.get(item)
+			#setting this variable is what links to the string in the
+			#list of inventories
+			#to the item objects themselves
+			
 			if item_object.taken == False:
 				self.inventory.append(item)
 				current_room.inventory.remove(item)

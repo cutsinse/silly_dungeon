@@ -7,13 +7,15 @@ from  sd_user import *
 from sd_rooms import *
 from sd_items import *
 
-
+#step 1: create single instances of the items, the rooms, the user. 
+	#single instances are important so that changes 
+	#can be saved to each instance as player does things, such as take items
 
 #This creates a single instance of the dictionary of all the items 
 #in the game. 
-item_dict = I_Engine().all_items
+item_dict = IEngine().all_items
 
-#This initializea all of the rooms in the game
+#This creates single instances all of the rooms in the game.
 alchemy = Alchemy()
 enchanting = Enchanting()
 basement = Basement()
@@ -24,11 +26,10 @@ entryway = Entryway()
 
 print("*" * 5, "Welcome to the Silly Dungeon", "*" * 5)
 player_name = input("What is your name?\n").lower()
-#For testing I got tired of dealing with the input part
 
-player = User(player_name, ["bag"])
+#creates the user instance. 
+user = User(player_name, ["bag"])
 
-#test area, turn play to True to activate the game loop. 
 
 print(dedent(f"""
 Welcome {player_name.capitalize()}!
@@ -44,17 +45,27 @@ Good luck!
 
 input("Press enter to continue")
 print(" ")
-#gameplay loop. 
-dev_input = entryway.enter(player, item_dict)
+
+
+#Below is the first major loop.  This loop is what changes what the 
+	#current room is, and uses single instances of the rooms to 
+	#save any changes made as the player moves from room to room. 
+	
+	#the enter function always returns a string with the name of the 
+	#room to enter next. 
+	#For the second major game play loop, the one ther player will 
+	#interact with, see sd_rooms.py, class Room(), function enter()
+
+dev_input = entryway.enter(user, item_dict)
 while True:
 	if dev_input == 'alchemy':
-		dev_input = alchemy.enter(player, item_dict)
+		dev_input = alchemy.enter(user, item_dict)
 	elif dev_input == 'enchanting':
-		dev_input = enchanting.enter(player, item_dict)
+		dev_input = enchanting.enter(user, item_dict)
 	elif dev_input == 'basement':
-		dev_input = basement.enter(player, item_dict)
+		dev_input = basement.enter(user, item_dict)
 	elif dev_input == 'entryway':
-		dev_input = entryway.enter(player, item_dict)
+		dev_input = entryway.enter(user, item_dict)
 	elif "q" in dev_input:
 		print('bye!')
 		exit(0)

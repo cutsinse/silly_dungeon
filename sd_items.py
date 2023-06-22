@@ -3,13 +3,16 @@
 from sys import exit
 from textwrap import dedent
 
-
+#Base class for all of the objects.  Also used to make simple objects 
+	#that don't do anything
 class Item(object):
 	def __init__(self, name, desc):
 		self.name = name
 		self.desc = desc
 		self.taken = False
-		
+	
+	#cannot be used with simple objects
+			#must be subclassed in order to use. 
 	def kill(self):
 		print(self.kill_desc)
 		exit(0)
@@ -21,9 +24,10 @@ class Item(object):
 class Paper(Item): 
 	def __init__(self, name, desc, contents):
 	#contents = what's written on the paper
-	#desc = description of the paper itself. 
+	#desc = description of the paper itself. (ex: "It's a crumpled note")
 		super(Paper, self).__init__(name, desc)
 		self.contents = contents
+		
 	def read(self):
 		print(dedent(self.contents))
 
@@ -32,6 +36,7 @@ class Chest(Item):
 		super(Chest, self).__init__('chest', """
 		A small chest with a lock on it.
 		""")
+		
 	def open(self, user):
 		if "key" in user.inventory:
 			print(dedent("""
@@ -46,19 +51,26 @@ class Chest(Item):
 class Potion(Item):
 	def __init__(self, name, desc):
 		super(Potion, self).__init__(name, desc)
-		self.teleport_target = None
+		#self.teleport_target = None
+			#every potion sets their own teleport_target
+			#I left this here in case anyone wants to set a default
+			#teleport target for all potions. 
 	
-	def set_teleport_target(self, target):
-		self.teleport_target = target
-		#probably don't need this anymore, but it doesn't hurt for now
+	#def set_teleport_target(self, target):
+		#self.teleport_target = target
+		#ended up not needing this function, but saving just in case. 
 		
 	def drink(self, user, room):
-		#This is the default option for drinking a potion, but taking in 
-		#the user instance adds consistency, and also makes it so more 
-		#potions can be added later that interact with the user instance. 
+		#This is the default option for drinking a potion, 
 		print("""\n***As the potion is consumed, you are engulfed in a swirling vortex of color and sensation!***\n""")
 		return self.teleport_target
-
+					
+		#drink() can and should be overriden for potions that do
+			#something different, like the red and yellow potions
+			
+		#The default version of drink() doesn't need the user argument, 
+			#but it is needed when you override it in a subclass, 
+			#like the yellow potion (see below)
 
 class Red(Potion):
 	def __init__(self):
@@ -113,9 +125,27 @@ class Yellow(Potion):
 		print("removed yellow potion\n")
 		return room.name
 		
+		#drinking the yellow potion perminantly removes it from the game
+			#but still has some hiccups I haven't quite figured out. 
+			#For example, the entire room description is written again, 
+			#which is a bit akward and makes it harder to see what the 
+			#yellow potion did. 
+			#however, it's the only way to loop back to the room's enter() 
+			#function that I've been able to figure out so the user 
+			#can continue playing properly. 
+			
+		#The yellow potion is also not removed from the description, 
+			#which is also confusing. 
+				
+				
+		
 
-
-class I_Engine():
+#I made this a class instead of a global variable so that you can quickly
+	#and easily create one instance of everything, so that the object 
+	#attributes can be changed and then remain consistent.
+	#such as the "taken" attribute, which can be changed from False to True
+	
+class IEngine():
 	all_items = {
 	"red potion": Red(), "blue potion": Blue(),
 	"green potion": Green(), "purple potion": Purple(), 
@@ -147,3 +177,4 @@ class I_Engine():
 		
 if __name__ == "__main__":
 	pass
+	#Testing area
