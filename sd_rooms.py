@@ -206,7 +206,7 @@ class Room(object):
 			else:
 				user.troll()
 				i += 1
-				if i > 7:
+				if i > 3:
 					print('Type "help" to see the different commands')
 				
 
