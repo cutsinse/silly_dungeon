@@ -7,4 +7,4 @@ Go to sd_rooms.
   dev_input while loop to enter the next room.  The default Room() value is self.exit = 'entryway'.  
   Others can be added, the Entryway() class has several examples.  
   
-  
+  This is a test line to test how to use git command line
