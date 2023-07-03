@@ -102,7 +102,7 @@ class Room(object):
 	def enter(self, user, item_dict):
 		#passing in the user and item_dict instances each time 
 		#helps keep everything consistent.
-		
+		i = 0
 		self.enter_callback()
 		while True:
 			choice = input(">").lower()
@@ -117,7 +117,7 @@ class Room(object):
 					#print(i, item)
 					if item in self.inventory:
 						user.take(item, item_dict, self)
-						
+												
 						#self = current room in the take function.  passing
 						#the room instance allows changes to the room's 
 						#inventory to be saved and remain the same as the 
@@ -205,6 +205,10 @@ class Room(object):
 				return self.exit			
 			else:
 				user.troll()
+				i += 1
+				if i > 7:
+					print('Type "help" to see the different commands')
+				
 
 		
 	
