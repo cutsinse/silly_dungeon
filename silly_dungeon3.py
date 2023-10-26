@@ -42,6 +42,8 @@ This game only has a fixed set of commands, to see the list, just type
 Good luck!
 
 """))
+#The "help" function is a general Room class function.  The user is automatically 
+#put into a room, and will always be in a room for the game. 
 
 input("Press enter to continue")
 print(" ")

@@ -11,7 +11,7 @@ class Item(object):
 		self.desc = desc
 		self.taken = False
 	
-	#cannot be used with simple objects
+	#the following functions cannot be used with simple objects
 			#must be subclassed in order to use. 
 	def kill(self):
 		print(self.kill_desc)
@@ -64,7 +64,9 @@ class Potion(Item):
 		#This is the default option for drinking a potion, 
 		print("""\n***As the potion is consumed, you are engulfed in a swirling vortex of color and sensation!***\n""")
 		return self.teleport_target
-					
+		#this returns back to sd_rooms and then to silly_dungeon3 in order 
+		#to change the current room. 
+		
 		#drink() can and should be overriden for potions that do
 			#something different, like the red and yellow potions
 			
@@ -140,11 +142,16 @@ class Yellow(Potion):
 				
 		
 
-#I made this a class instead of a global variable so that you can quickly
+#I made the following a class instead of a global variable so that you can quickly
 	#and easily create one instance of everything, so that the object 
 	#attributes can be changed and then remain consistent.
 	#such as the "taken" attribute, which can be changed from False to True
-	
+
+#in silly_dungeon3.py, you in one line create an instance of the engine class
+#and an instance of the all_items dictionary AND an instance of each item within the dictionary
+#woot woot!
+
+
 class IEngine():
 	all_items = {
 	"red potion": Red(), "blue potion": Blue(),

@@ -19,6 +19,10 @@ class User():
 		print(self.inventory)
 	
 	def take(self, item, item_dict, current_room):
+		#The item variable is taken from user input, see sd_rooms enter function 
+		#loop for more details. 
+		#Takes in the instances of the item dictionary and rooms created in silly_dungeon3.py
+		
 		if item in current_room.inventory:
 			item_object = item_dict.get(item)
 			#setting this variable is what links to the string in the
@@ -32,6 +36,8 @@ class User():
 			elif item_object.taken == True:
 				print("""item_object.taken == True, but it was found in
 				the current_room.inventory? """)
+				#if all goes according to plan, this elif statment should 
+				#never be seen. It is here for testing purposes 
 		else:
 			print("""Item not taken.  Did you already take it?.""")
 	

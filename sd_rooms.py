@@ -85,7 +85,7 @@ class Room(object):
 	
 #enter() is the primary game loop that the player will be interacting
 		#with.  If you want the user to type something and then have something 
-		#happen, this is the function to do make it happen.
+		#happen, this is the function to make it happen.
 		
 		#Also note, there are several pieces of code that are commented out, 
 		#most of these I put in for testing purposes, and can be 
@@ -114,6 +114,9 @@ class Room(object):
 			elif 'take' in choice or "pick up" in choice:
 				#print(self.inventory)	
 				for item in choice.split():
+					#.spit changes the choice variable (aka; user input) into a list of words, separated by spaces
+					#so that it can compare the choice list to the room's inventory list
+					
 					#print(i, item)
 					if item in self.inventory:
 						user.take(item, item_dict, self)
@@ -123,8 +126,12 @@ class Room(object):
 						#inventory to be saved and remain the same as the 
 						#user keeps playing. 
 						
+						
 						print("taken")
 						break
+						#breaks the loop back to line 108, choice = input.......
+						
+					#two word item keys require extra processing	
 					elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
 						user.take("glowing stone", item_dict, self)
 						print("taken")
@@ -143,6 +150,8 @@ class Room(object):
 				#for loop, and then put an else statement ALIGNED WITH THE
 				#'for' instead instead of aligned with 'if' and 'elif' 
 				#which is nested under the for loop. 	
+				
+				#nifty, but I didn't end up using that 
 
 			elif 'drink' in choice:							
 				for item in choice.split():	
@@ -151,11 +160,16 @@ class Room(object):
 						return item_dict.get(f"{item} potion").drink(user, self)
 					#i = i +1
 				else:
-					print("You can't do that yet.")
+					print("You can't do that.")
 					
 			
 			elif "help" in choice or "h" == choice:
 				self.help()	
+			
+			#Navigation commands, made as general as possible to be able to use it
+			#in all the different rooms
+			#returns the string to the silly_dungeon3.py module to change rooms 
+			
 			elif "straight" in choice or "door" in choice:
 				return self.straight
 			elif "up" in choice:
@@ -186,6 +200,7 @@ class Room(object):
 						#print(i, item)
 						if item in self.inventory:
 							item_dict.get(item).look_at()
+							#goes into the item object itself and prints the description
 							#i =+ 1
 							break
 						elif f"glowing {item}" in self.inventory or f'{item} stone' in self.inventory:
@@ -198,6 +213,7 @@ class Room(object):
 						print("Look at what?")
 				else:
 					self.check_inventory()
+					#checks the room's inventory
 						
 					
 			
@@ -211,14 +227,15 @@ class Room(object):
 				
 
 		
-	
+#Each specific room is a sub-class, which passes in the starting inventories,
+# descriptions, and exits.
 	
 class Alchemy(Room):
 	
 	def __init__(self):
 		super(Alchemy, self).__init__([
 		"red potion", "blue potion", "green potion", 
-		"purple potion", "yellow potion", "bag"
+		"purple potion", "yellow potion"
 		])
 		self.desc = """
 			The room is dimly lit and filled with the heady aroma of various ingredients. 
@@ -280,7 +297,9 @@ class Basement(Room):
 		self.up = 'entryway'
 
 
-
+#The following code is only executed if this file is run directly instead of imported to 
+#silly_dungeon3.py. 
+#This code is used for testing
 	
 if __name__ == "__main__":
 
